@@ -79,15 +79,52 @@ def login():
                     'answer' : 'There are total 288 seats in Rajya Sabha'
                     }]
                 })
-                user_chats = chats.find({"user_Id": get_userdId}).sort("user_Id", 1)
-                for chat in user_chats:
-                    print(chat)
-                flash('Login successful.', 'success')
+                # user_chats = chats.find({"user_Id": get_userdId}).sort("user_Id", 1)
+                # for chat in user_chats:
+                #     print(chat)
+                return redirect(url_for('chat', username=username, user_Id=get_userdId))
+                # flash('Login successful.', 'success')
             # Add any additional logic, such as session management
         else:
             flash('Invalid username or password. Please try again.', 'danger')
 
     return render_template('login.html')
+
+@app.route('/chat/<username>/<user_Id>', methods=['GET', 'POST'])
+def chat(username, user_Id):
+    # if 'username' not in session:
+    #     return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        # user_id = session['user_id']  # Assuming you have user_id stored in session
+        message_text = request.form['message']
+        # Save user message to the database
+        # message = Message(user_id, message_text)
+        # mongo.db.messages.insert_one(message.__dict__)
+
+        # Here you would send the user's question to Google Palm's API
+        # Get the response from the API and display it back to the user
+        response = "Response from Google Palm's API"
+        new_chat = str(uuid.uuid4())
+        chats.insert_one({
+            'user_Id' : user_Id,
+            'chat_Id' : new_chat,
+            'chat_title' : response,
+            'timestamp' : datetime.utcnow(),
+            'responses' : [
+            {
+                'question' : message_text,
+                'answer' : response
+            }]
+        })
+        # You would replace "Response from Google Palm's API" with actual API response
+
+        # For now, let's assume response from API is stored in variable 'response'
+        return render_template('chat.html', username=username, user_Id=user_Id, response=response)
+
+    # Fetch chat history from the database and pass it to the template
+    chat_history = chats.find({'user_Id': user_Id})
+    return render_template('chat.html', username=username, user_Id=user_Id, chat_history=chat_history)
 
 @app.route('/populateDB', methods=["GET"])
 def populateDB():
