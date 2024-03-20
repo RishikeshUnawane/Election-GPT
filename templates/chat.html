@@ -11,14 +11,15 @@
     <div id="chat-history">
         {% for message in chat_history %}
             <p>{{ message.message }}</p>
+            <p>{{ message.response.answer }}</p>
         {% endfor %}
     </div>
     <form action="{{ url_for('chat', username=username, user_Id=user_Id) }}" method="post">
         <input type="text" name="message" placeholder="Ask a question...">
         <button type="submit">Send</button>
     </form>
-    {% if response %}
+    <!-- {% if response %}
         <p>{{ response }}</p>
-    {% endif %}
+    {% endif %} -->
 </body>
 </html>

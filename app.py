@@ -2,14 +2,19 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from pymongo import MongoClient, ReturnDocument
 from pymongo.server_api import ServerApi
 from datetime import datetime
+from langchain_helper import get_qa_chain, create_vector_db
 import bcrypt
 import uuid
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "Abasiandad1213124safa"  # Replace with a strong secret key
+app.secret_key = os.getenv("APP_SECRET")  # Replace with a strong secret key
 
 #Setting up Cloud DB
-# uri = "connection string"
+# uri = os.getenv("MONGODB_URI")
 # client = MongoClient(uri, server_api=ServerApi('1'))
 # db = client.electiongpt
 # users = db.users
@@ -67,18 +72,18 @@ def login():
         if user:
             get_userdId = user.get('user_Id')
             if bcrypt.checkpw(request.form['password'].encode('utf-8'), user['encrypt_pass']):
-                new_chat = str(uuid.uuid4())
-                chats.insert_one({
-                    'user_Id' : get_userdId,
-                    'chat_Id' : new_chat,
-                    'chat_title' : 'How many seats are there in Rajya Sabha?',
-                    'timestamp' : datetime.utcnow(),
-                    'responses' : [
-                    {
-                    'question' : 'How many seats are there in Rajya Sabha?',
-                    'answer' : 'There are total 288 seats in Rajya Sabha'
-                    }]
-                })
+                # new_chat = str(uuid.uuid4())
+                # chats.insert_one({
+                #     'user_Id' : get_userdId,
+                #     'chat_Id' : new_chat,
+                #     'chat_title' : 'How many seats are there in Rajya Sabha?',
+                #     'timestamp' : datetime.utcnow(),
+                #     'responses' : [
+                #     {
+                #     'question' : 'How many seats are there in Rajya Sabha?',
+                #     'answer' : 'There are total 288 seats in Rajya Sabha'
+                #     }]
+                # })
                 # user_chats = chats.find({"user_Id": get_userdId}).sort("user_Id", 1)
                 # for chat in user_chats:
                 #     print(chat)
@@ -104,26 +109,31 @@ def chat(username, user_Id):
 
         # Here you would send the user's question to Google Palm's API
         # Get the response from the API and display it back to the user
-        response = "Response from Google Palm's API"
+        # chain = get_qa_chain()
+        # response = chain(message_text)
         new_chat = str(uuid.uuid4())
-        chats.insert_one({
-            'user_Id' : user_Id,
-            'chat_Id' : new_chat,
-            'chat_title' : response,
-            'timestamp' : datetime.utcnow(),
-            'responses' : [
-            {
-                'question' : message_text,
-                'answer' : response
-            }]
-        })
-        # You would replace "Response from Google Palm's API" with actual API response
+        response = get_qa_chain()(message_text)
+        # Extract relevant information from the response dictionary
+        # print(response['result'])
 
-        # For now, let's assume response from API is stored in variable 'response'
-        return render_template('chat.html', username=username, user_Id=user_Id, response=response)
+        # Insert the chat into MongoDB
+        chat = {
+            'user_Id': user_Id,
+            'chat_Id': new_chat,
+            'message': message_text,
+            'response': {
+                'question': message_text,
+                'answer': response['result']
+            },
+            'timestamp': datetime.utcnow()
+        }
+        chats.insert_one(chat)
+        chat_history = chats.find({'user_Id': user_Id})
+        return render_template('chat.html', username=username, user_Id=user_Id, response=response['result'], chat_history=chat_history)
 
     # Fetch chat history from the database and pass it to the template
-    chat_history = chats.find({'user_Id': user_Id})
+    # chat_history = chats.find({'user_Id': user_Id})
+    # print(chat_history)
     return render_template('chat.html', username=username, user_Id=user_Id, chat_history=chat_history)
 
 @app.route('/populateDB', methods=["GET"])

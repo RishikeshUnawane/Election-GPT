@@ -1,17 +1,17 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h2>Register</h2>
+<!-- <h2>Register</h2> -->
 {% with messages = get_flashed_messages() %}
 {% if messages %}
-<ul class="messages">
+<!-- <ul class="messages">
     {% for message in messages %}
     <li>{{ message }}</li>
     {% endfor %}
-</ul>
+</ul> -->
 {% endif %}
 {% endwith %}
-<form method="post" action="{{ url_for('register') }}">
+<!-- <form method="post" action="{{ url_for('register') }}">
     <label for="username">Username:</label>
     <input type="text" name="username" required>
     <label for="password">Password:</label>
@@ -19,5 +19,26 @@
     <label for="voterId">Voter Id:</label>
     <input type="text" name="voterId" required>
     <button type="submit">Register</button>
-</form>
-{% endblock %}
+</form> -->
+<div>
+    <div style="margin-bottom: 40px;font-size: 30px;display: flex;justify-content: flex-start;align-items: center;margin: auto;width: 400px;">
+        <div>Register</div>
+    </div>
+    <div style="background-color: #f6f6f7;min-height: 500px;border-radius: 10px;display: flex;justify-content: space-around;align-items: center;margin: auto;min-width: 450px;;flex-direction: column;margin: auto;width: 400px;margin-top: 20px;">
+        <div style="display: flex;justify-content: center;flex-direction: column;width: 60%;">
+            <label style="font-size: 20px;color: #1e1e1e;" for="username">Username:</label>
+            <input placeholder="Enter Username" style="padding: 5px;padding-left: 10px;padding-right: 10px;padding-left: 20px;margin-top: 15px;height: 30px;border-radius: 20px;outline: none;border: none;" type="text" name="username" required>
+        </div>
+        <div style="display: flex;justify-content: center;flex-direction: column;width: 60%;">
+            <label style="font-size: 20px;color: #1e1e1e;" for="password">Password:</label>
+            <input placeholder="Enter Password" style="padding: 5px;padding-left: 10px;padding-right: 10px;padding-left: 20px;margin-top: 15px;height: 30px;border-radius: 20px;outline: none;border: none;" type="password" name="password" required>
+        </div>
+        <div style="display: flex;justify-content: center;flex-direction: column;width: 60%;">
+            <label style="font-size: 20px;color: #1e1e1e;" for="voterId">Voter Id:</label>
+            <input placeholder="Enter Voter Id Number" style="padding: 5px;padding-left: 20px;padding-right: 10px;margin-top: 15px;height: 30px;border-radius: 20px;outline: none;border: none;" type="text" name="voterId" required>
+        </div>
+        <button style="padding: 10px;padding-left: 20px;padding-right: 20px;border: none;outline: none;background-color: #1e1e1e;color: #fff;border-radius: 20px;" type="submit">Register</button>
+    </div>
+</div>
+{% endblock %}
+
