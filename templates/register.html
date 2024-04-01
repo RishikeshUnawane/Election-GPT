@@ -2,15 +2,15 @@
 
 {% block content %}
 <!-- <h2>Register</h2> -->
-{% with messages = get_flashed_messages() %}
-{% if messages %}
+<!-- {% with messages = get_flashed_messages() %}
+{% if messages %} -->
 <!-- <ul class="messages">
     {% for message in messages %}
     <li>{{ message }}</li>
     {% endfor %}
 </ul> -->
-{% endif %}
-{% endwith %}
+<!-- {% endif %}
+{% endwith %} -->
 <!-- <form method="post" action="{{ url_for('register') }}">
     <label for="username">Username:</label>
     <input type="text" name="username" required>
@@ -20,6 +20,7 @@
     <input type="text" name="voterId" required>
     <button type="submit">Register</button>
 </form> -->
+<form method="post" action="{{ url_for('register') }}">
 <div>
     <div style="margin-bottom: 40px;font-size: 30px;display: flex;justify-content: flex-start;align-items: center;margin: auto;width: 400px;">
         <div>Register</div>
@@ -40,5 +41,6 @@
         <button style="padding: 10px;padding-left: 20px;padding-right: 20px;border: none;outline: none;background-color: #1e1e1e;color: #fff;border-radius: 20px;" type="submit">Register</button>
     </div>
 </div>
-{% endblock %}
+</form>
+{% endblock %}
 
