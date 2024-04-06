@@ -11,4 +11,3 @@ flask
 pymongo
 bcrypt
 uuid
-os

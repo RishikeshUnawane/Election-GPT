@@ -3,28 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>Election GPT</title>
+    <style>
+        ::placeholder{
+            font-family: 'LeagueSpartan';
+            font-size: 15px;
+        }
+    </style>
 </head>
-<body>
-    <h1>Chat</h1>
-    <h2>Welcome, {{ username }}</h2>
-    <div id="chat-history">
-        <!-- {% if chat_history %}
-        {% for message in chat_history %}
-            <p>{{ message }}</p>
-        {% endfor %}
-        {% endif %} -->
-        {% if result_list %}
-        {% for question, answer in result_list %}
-            <li>
-                <strong>{{ question }}</strong>: {{ answer }}
-            </li>
-        {% endfor %}
-        {% endif %}
+<body style="height: 100vh;width: 100vw;margin: 0;" >
+    <div style="height: 100vh;width: 100vw;display: flex;flex-direction: row;">
+        <div style="height: 100vh;width: 100vw;display: flex;flex-direction: column;flex: 0.2; background-color: #1e1e1e;position: relative;">
+            <div style="font-family: 'LeagueSpartan';margin-top: 40px;margin-left: 20px;color: #fff;font-size: 25px;">Previous Chats</div>
+            {% for chat in chat_list %}
+            <div style="margin-top: 50px;margin-left: 20px;">
+                <div style="color: #ddd;font-family: 'LeagueSpartan';margin-bottom: 25px;">
+                    <a href="{{ url_for('chat', username=username, user_Id=user_Id, chat_Id=chat.chat_Id) }}" style="color: white; text-decoration: none;">
+                    {{ chat.chat_title }}
+                    </a>
+                </div>
+                <!-- <div style="color: #ddd;font-family: 'LeagueSpartan';margin-bottom: 25px;">Why isn't python 3.10 working on my PC?</div>
+                <div style="color: #ddd;font-family: 'LeagueSpartan';margin-bottom: 25px;">How do i vote in the upcoming 2024 elections</div> -->
+            </div>
+            {% endfor %}
+            <div style="position: absolute;bottom: 30px;left: 20px;font-family: 'LeagueSpartan';color: #fff;font-size: 20px;">
+                {{ username }} 
+            </div>
+        </div>
+        <div style="height: 100vh;width: 100vw;display: flex;flex: 0.8;background-color: #f5f4f4;position: relative;flex-direction: column; overflow: scroll;">
+            <div style="display: flex;margin-left: auto;margin-right: auto;font-size: 40px;font-family: LeagueSpartan;color: #1e1e1e;margin-top: 10%;">Election GPT</div>
+            <div style="display: flex;flex-direction: column;margin-top: 30px;padding: 30px;">
+                {% if result_list %}
+                {% for question, answer in result_list %}
+                <div style="margin-bottom: 20px;min-height: 100px;background-color: #1e1e1e;padding: 30px;border-radius: 10px;">
+                    <div style="font-family: 'LeagueSpartan';font-size: 20px;font-weight: 600;color: #ddd;">Question</div>
+                    <div style="margin-top: 15px;font-family: 'LeagueSpartan';font-size: 16px;color: #ddd;">{{ question }}</div>
+                </div>
+                <div style="margin-bottom: 20px;min-height: 100px;background-color: #FFAB12;padding: 30px;border-radius: 10px;">
+                    <div style="font-family: 'LeagueSpartan';font-size: 20px;font-weight: 600;color: #1e1e1e;">Answer</div>
+                    <div style="margin-top: 15px;font-family: 'LeagueSpartan';font-size: 16px;color: #1e1e1e;">{{ answer }}</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div id="chatbox" style="display: flex;flex-direction: row;width: 100%;align-items: center;position: sticky;bottom: 30px;left: 0;right: 0;margin: auto;justify-content: center;">
+                <form action="{{ url_for('chat', username=username, user_Id=user_Id, chat_Id=chat_Id) }}" method="post" style="width: 100%; display: flex; justify-content: center; align-items: center;">
+                <img style="height: 30px;width: 30px;position: absolute; left: 6%;" src="https://icones.pro/wp-content/uploads/2021/02/loupe-et-icone-de-recherche-de-couleur-grise.png"/>
+                <input type="text" name="message" placeholder="How can i help you today?" style="width: 100%; height: 50px;outline: none;border: none;border-radius: 15px;padding-left: 50px;margin-left: 5%;margin-right: 5%;"/>
+                <!-- <button type="submit">Send</button> -->
+            </form>
+            </div>
+        </div>
     </div>
-    <form action="{{ url_for('chat', username=username, user_Id=user_Id, chat_Id=chat_Id) }}" method="post">
-        <input type="text" name="message" placeholder="Ask a question...">
-        <button type="submit">Send</button>
-    </form>
 </body>
+<script>
+    document.querySelector("#chatbox").addEventListener("click",() => {
+        window.scrollTo(0,document.body.scrollHeight);
+    })
+</script>
 </html>

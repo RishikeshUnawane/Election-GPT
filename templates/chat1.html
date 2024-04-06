@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+</head>
+<body>
+    <h1>Chat</h1>
+    <h2>Welcome, {{ username }}</h2>
+    <div id="chat-history">
+        <!-- {% if chat_history %}
+        {% for message in chat_history %}
+            <p>{{ message }}</p>
+        {% endfor %}
+        {% endif %} -->
+        {% if result_list %}
+        {% for question, answer in result_list %}
+            <li>
+                <strong>{{ question }}</strong>: {{ answer }}
+            </li>
+        {% endfor %}
+        {% endif %}
+    </div>
+    <form action="{{ url_for('chat', username=username, user_Id=user_Id, chat_Id=chat_Id) }}" method="post">
+        <input type="text" name="message" placeholder="Ask a question...">
+        <button type="submit">Send</button>
+    </form>
+</body>
+</html>

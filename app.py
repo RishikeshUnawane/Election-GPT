@@ -97,6 +97,9 @@ def chat(username, user_Id, chat_Id):
         chat_document = chats.find_one({'user_Id': user_Id, 'chat_Id': chat_Id})
         if chat_document:
             update_data = {
+                '$set': {
+                    'chat_title' : message_text,
+                },
                 '$push': {
                     'response': {
                         'question': message_text,
@@ -105,23 +108,38 @@ def chat(username, user_Id, chat_Id):
                 }
             }
             chats.update_one({'user_Id': user_Id, 'chat_Id': chat_Id}, update_data)
+        
+        all_chats = chats.find({'user_Id': user_Id})
+        chat_list = list(all_chats)
+        print('all chat', all_chats)
         updated_document = chats.find_one({'user_Id': user_Id, 'chat_Id': chat_Id})
         chat_history = updated_document['response']
+        if updated_document is not None:
+            chat_history = updated_document.get('response', [])
+            # for chat in chat_history:
+            #     print('Chat', chat)
+        else:
+            print("Document not found")
         result_list = []
         for data in chat_history:
             question = data['question']
             answer = data['answer']
             result_list.append((question, answer))
-        return render_template('chat.html', username=username, user_Id=user_Id, chat_Id=chat_Id, result_list=result_list)
+        return render_template('chat.html', username=username, user_Id=user_Id, chat_Id=chat_Id, result_list=result_list, chat_list=chat_list)
+    
+    all_chats = chats.find({'user_Id': user_Id})
+    chat_list = list(all_chats)
+    print('all chat', all_chats)
     updated_document = chats.find_one({'user_Id': user_Id, 'chat_Id': chat_Id})
     chat_history = updated_document['response']
+    print('updated', updated_document)
     result_list = []
     for data in chat_history:
         question = data['question']
         answer = data['answer']
         result_list.append((question, answer))
     print('result dictionary', result_list)
-    return render_template('chat.html', username=username, user_Id=user_Id, chat_Id=chat_Id, result_list=result_list)
+    return render_template('chat.html', username=username, user_Id=user_Id, chat_Id=chat_Id, result_list=result_list, chat_list=chat_list)
 
 # main driver function
 if __name__ == '__main__':
