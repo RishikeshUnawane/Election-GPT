@@ -3,40 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css" integrity="sha384-BY+fdrpOd3gfeRvTSMT+VUZmA728cfF9Z2G42xpaRkUGu2i3DyzpTURDo5A6CaLK" crossorigin="anonymous">
     <title>Election GPT</title>
-    <style>
-        ::placeholder{
-            font-family: 'LeagueSpartan';
-            font-size: 15px;
-        }
-    </style>
 </head>
 <body style="height: 100vh;width: 100vw;margin: 0;" >
     <div style="height: 100vh;width: 100vw;display: flex;flex-direction: row;">
         <div style="height: 100vh;width: 100vw;display: flex;flex-direction: column;flex: 0.2; background-color: #1e1e1e;position: relative;">
-            <div style="font-family: 'LeagueSpartan';margin-top: 40px;margin-left: 20px;color: #fff;font-size: 25px;">Previous Chats</div>
+            <div style="font-family: 'LeagueSpartan';margin-top: 40px;margin-left: 15px;color: #fff;font-size: 25px;">
+                <a href="{{ url_for('newchat', username=username, user_Id=user_Id) }}" style="font-family: 'LeagueSpartan';color: #fff;font-size: 17px;background-color: #303030;border-radius: 15px;padding: 10px;padding-left: 20px;padding-right: 20px;outline: none;border: none; text-decoration: none; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">New Chat</a> 
+            </div>
             {% for chat in chat_list %}
             <div style="margin-top: 50px;margin-left: 20px;">
-                <div style="color: #ddd;font-family: 'LeagueSpartan';margin-bottom: 25px;">
-                    <a href="{{ url_for('chat', username=username, user_Id=user_Id, chat_Id=chat.chat_Id) }}" style="color: white; text-decoration: none;">
+                <div style="color: #ddd;font-family: 'LeagueSpartan';margin-bottom: 25px; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; position: relative;">
+                    <a href="{{ url_for('chat', username=username, user_Id=user_Id, chat_Id=chat.chat_Id) }}" style="color: white; text-decoration: none; margin-right: 10px; max-width: 150px;">
                     {{ chat.chat_title }}
+                    <a href="{{ url_for('delete_chat', username=username, user_Id=user_Id, chat_Id=chat.chat_Id) }}" style="text-decoration: none; width: 40px; background-color: white; padding: 5px; border-radius: 50px; display: flex; justify-content: center; position: absolute; right: 20px;"><img src="https://cdn-icons-png.flaticon.com/512/3405/3405244.png" alt="delete" style="height: 20px; width: 20px;"></a>
                     </a>
                 </div>
-                <!-- <div style="color: #ddd;font-family: 'LeagueSpartan';margin-bottom: 25px;">Why isn't python 3.10 working on my PC?</div>
-                <div style="color: #ddd;font-family: 'LeagueSpartan';margin-bottom: 25px;">How do i vote in the upcoming 2024 elections</div> -->
             </div>
             {% endfor %}
             <div style="position: absolute;bottom: 30px;left: 20px;font-family: 'LeagueSpartan';color: #fff;font-size: 20px;">
                 {{ username }} 
             </div>
             <div style="position: absolute;bottom: 30px;left: 90px;color: #fff;font-size: 20px;">
-                <a href="{{ url_for('logout') }}" style="padding: 2px;  background-color: white; color: black; text-decoration: none; border-radius: 10%;">Logout</a> 
-            </div>
-            <div style="position: absolute;bottom: 30px;left: 150px;color: #fff;font-size: 20px;">
-                <a href="{{ url_for('newchat', username=username, user_Id=user_Id) }}" style="padding: 2px;  background-color: white; color: black; text-decoration: none; border-radius: 10%;">New Chat</a> 
+                <a href="{{ url_for('logout') }}" style="font-family: 'LeagueSpartan';color: #fff;font-size: 17px;background-color: #303030;border-radius: 15px;padding: 10px;padding-left: 20px;padding-right: 20px;outline: none;border: none; text-decoration: none; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">Logout</a> 
             </div>
         </div>
-        <div style="height: 100vh;width: 100vw;display: flex;flex: 0.8;background-color: #f5f4f4;position: relative;flex-direction: column; overflow: scroll;">
+        <div id="id" style="height: 100vh;width: 100vw;display: flex;flex: 0.8;background-color: #f5f4f4;position: relative;flex-direction: column; overflow: scroll;">
             <div style="display: flex;margin-left: auto;margin-right: auto;font-size: 40px;font-family: LeagueSpartan;color: #1e1e1e;margin-top: 10%;">Election GPT</div>
             <div style="display: flex;flex-direction: column;margin-top: 30px;padding: 30px;">
                 {% if result_list %}
@@ -55,16 +48,10 @@
             <div id="chatbox" style="display: flex;flex-direction: row;width: 100%;align-items: center;position: sticky;bottom: 30px;left: 0;right: 0;margin: auto;justify-content: center;">
                 <form action="{{ url_for('chat', username=username, user_Id=user_Id, chat_Id=chat_Id) }}" method="post" style="width: 100%; display: flex; justify-content: center; align-items: center;">
                 <img style="height: 30px;width: 30px;position: absolute; left: 6%;" src="https://icones.pro/wp-content/uploads/2021/02/loupe-et-icone-de-recherche-de-couleur-grise.png"/>
-                <input type="text" name="message" placeholder="How can i help you today?" style="width: 100%; height: 50px;outline: none;border: none;border-radius: 15px;padding-left: 50px;margin-left: 5%;margin-right: 5%;"/>
-                <!-- <button type="submit">Send</button> -->
+                <input id="myInput" type="text" name="message" placeholder="How can i help you today?" style="width: 100%; height: 50px;outline: none;border: none;border-radius: 15px;padding-left: 50px;margin-left: 5%;margin-right: 5%;"/>
             </form>
             </div>
         </div>
     </div>
 </body>
-<script>
-    document.querySelector("#chatbox").addEventListener("click",() => {
-        window.scrollTo(0,document.body.scrollHeight);
-    })
-</script>
 </html>

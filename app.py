@@ -88,7 +88,7 @@ def login():
                 chats.insert_one({
                     'user_Id' : get_userdId,
                     'chat_Id' : new_chat,
-                    'chat_title' : '',
+                    'chat_title' : 'New Chat',
                     'response': [],
                     'timestamp' : datetime.utcnow()
                 })
@@ -162,6 +162,20 @@ def newchat(username, user_Id):
     })
     # Redirect the user back to the chat page after creating the chat
     return redirect(url_for('chat', username=username, user_Id=user_Id, chat_Id=new_chat_Id))
+
+@app.route('/delete_chat/<username>/<user_Id>/<chat_Id>', methods=['GET', 'POST'])
+@login_required
+def delete_chat(username, user_Id, chat_Id):
+    chat_document = chats.find_one({'user_Id': user_Id, 'chat_Id': chat_Id})
+    if chat_document:
+        # Delete the chat from the database
+        chats.delete_one({'user_Id': user_Id, 'chat_Id': chat_Id})
+        flash('Chat deleted successfully.', 'success')
+    else:
+        flash('Chat not found.', 'danger')
+    
+    # Redirect back to the chat page
+    return redirect(url_for('newchat', username=username, user_Id=user_Id))
 
 @app.route('/logout', methods=['POST', 'GET'])
 @login_required
